@@ -9,16 +9,32 @@ const TossCardComponent = () => {
     const onclickHeadsHandler = async () => {
       console.log(Contract)
         await callToss(Contract,account,0).then(async ()=> {
-          await getWinOrLose(Contract).then((data)=> {console.log(data)});
+          await getWinOrLose(Contract).then((data)=> {
+            if(data === true){
+              setTossWin(1);
+            }
+            else{
+              setTossWin(0)
+            }
+          });
         } );
+        console.log(tossWin)
         // console.log(res);
         // setTossWin(res);
         // console.log(tossWin);
     }
     const onclickTailsHandler = async () => {
       await callToss(Contract,account,1).then(async ()=> {
-        await getWinOrLose(Contract).then((data)=> {console.log(data)});
+        await getWinOrLose(Contract).then((data)=> {
+          if(data === true){
+            setTossWin(1);
+          }
+          else{
+            setTossWin(0)
+          }
+        });
       } );
+      console.log(tossWin)
       // console.log(res);
       // setTossWin(res);
       // console.log(tossWin);
