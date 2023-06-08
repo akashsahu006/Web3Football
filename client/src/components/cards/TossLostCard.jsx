@@ -1,8 +1,8 @@
 import React from 'react'
 
-const TossLostCard = ({setGameState,setTossState, setCurrentStrikerState}) => {
+const TossLostCard = ({setGameState,setTossState, setCurrentPlayerState}) => {
   const onContinueHandler = () => {
-    setCurrentStrikerState(2);
+    setCurrentPlayerState(1);
     setTossState(false)
     setGameState(true);
   }

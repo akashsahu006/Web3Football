@@ -14,4 +14,20 @@ const callToss = async (contract,account,choice) => {
     return t;
 }
 
-export {getRequestRandomWords,callToss}
+const updatePlayerState = async (contract,account,choice) =>{
+    if(!contract){
+        return false;
+    }
+    const t = await contract.methods.setPlayerState(choice).send({from:account.currentAccount})
+    return t;
+}
+
+const penaltyShoot = async (contract,account,interFace, option) => {
+    if(!contract){
+        return false;
+    }
+    const t = await contract.methods.penalty_shoot(interFace,option).send({from:account.currentAccount})
+    return t
+}
+
+export {getRequestRandomWords,callToss,updatePlayerState, penaltyShoot}

@@ -3,7 +3,7 @@ import TossCardComponent from './TossCardComponent'
 import TossLoadingComponent from './TossLoadingComponent';
 import TossResultCard from './cards/TossResultCard';
 
-const Toss = ({setGameState,setTossState,setCurrentStrikerState}) => {
+const Toss = ({setGameState,setTossState,setCurrentPlayerState}) => {
     const [tossCardState, setTossCardState] = useState(true);
     const [loadingState, setLoadingState] = useState(false);
     const [tossResultCardState, setTossResultCardState] = useState(false);
@@ -13,7 +13,7 @@ const Toss = ({setGameState,setTossState,setCurrentStrikerState}) => {
     <div>
         {tossCardState && <TossCardComponent setTossCardState={setTossCardState} setLoadingState={setLoadingState} setTossWin={setTossWin} setTossResultCardState={setTossResultCardState}/>}
         {loadingState && <TossLoadingComponent/>}
-        {tossResultCardState && <TossResultCard tossWin={tossWin} setGameState={setGameState} setTossState={setTossState} setCurrentStrikerState={setCurrentStrikerState}/>}
+        {tossResultCardState && <TossResultCard tossWin={tossWin} setGameState={setGameState} setTossState={setTossState} setCurrentPlayerState={setCurrentPlayerState}/>}
     </div>
   )
 }

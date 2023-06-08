@@ -1,13 +1,13 @@
 import React from 'react'
 
-const TossWinCard = ({setGameState,setTossState,setCurrentStrikerState}) => {
+const TossWinCard = ({setGameState,setTossState,setCurrentPlayerState}) => {
   const onShootFirstHandler = () => {
-    setCurrentStrikerState(1);
+    setCurrentPlayerState(2);
     setGameState(true);
     setTossState(false);
   }
   const onShootSecondHandler = () => {
-    setCurrentStrikerState(2);
+    setCurrentPlayerState(1);
     setGameState(true);
     setTossState(false);
   }
