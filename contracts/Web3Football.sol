@@ -47,6 +47,20 @@ contract Web3Football is VRFConsumerBaseV2, ConfirmedOwner {
 
     //stores the random number in the array
 
+    //toss
+
+    uint8 public tossChoice;
+    bool public winOrLoss;
+
+    function toss(uint8 _tossChoice) public {
+        tossChoice = _tossChoice;
+        if (randomNumbers[0] % 2 == tossChoice) {
+            winOrLoss = true;
+        } else {
+            winOrLoss = false;
+        }
+    }
+
     //structure that stores the details
     struct game_starting_details {
         uint8 player1_level;

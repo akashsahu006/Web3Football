@@ -1,44 +1,32 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext } from 'react'
 import Web3Context from '../contexts'
 import { callToss } from '../contexts/UseContract/writeContract';
 import { getWinOrLose } from '../contexts/UseContract/readContract';
 
-const TossCardComponent = () => {
+const TossCardComponent = ({setTossCardState, setLoadingState,setTossWin,setTossResultCardState}) => {
     const {account, Contract} = useContext(Web3Context);
-    const[tossWin, setTossWin] = useState(3);
+    // const[tossWin, setTossWin] = useState(3);
     const onclickHeadsHandler = async () => {
       console.log(Contract)
+        setTossCardState(false);
+        setLoadingState(true);
         await callToss(Contract,account,0).then(async ()=> {
-          await getWinOrLose(Contract).then((data)=> {
-            if(data === true){
-              setTossWin(1);
-            }
-            else{
-              setTossWin(0)
-            }
-          });
+          await getWinOrLose(Contract).then((data)=> {{setTossWin(data)}});
         } );
-        console.log(tossWin)
-        // console.log(res);
-        // setTossWin(res);
-        // console.log(tossWin);
+        setLoadingState(false);
+        setTossResultCardState(true)
+        
     }
     const onclickTailsHandler = async () => {
+      setTossCardState(false);
+      setLoadingState(true);
       await callToss(Contract,account,1).then(async ()=> {
-        await getWinOrLose(Contract).then((data)=> {
-          if(data === true){
-            setTossWin(1);
-          }
-          else{
-            setTossWin(0)
-          }
-        });
+        await getWinOrLose(Contract).then((data)=> {setTossWin(data)});
       } );
-      console.log(tossWin)
-      // console.log(res);
-      // setTossWin(res);
-      // console.log(tossWin);
+      setLoadingState(false);
+      setTossResultCardState(true)
     }
+    
 
   return (
     <div className='flex flex-col justify-center items-center  w-[400px] h-[200px] bg-red-500'>

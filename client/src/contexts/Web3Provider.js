@@ -5,10 +5,14 @@ import Web3 from 'web3';
 import Web3Football from "../contracts/Web3Football.json"
 
 const Web3Provider = ({ children }) => {
+  
+
   const [account, setAccount] = useState({
     accounts: null,
     currentAccount: null,
   });
+
+
   const [Contract, setContract] = useState('');
 
   const connectWallet = async () => {
