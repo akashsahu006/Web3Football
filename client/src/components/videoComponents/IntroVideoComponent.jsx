@@ -10,7 +10,7 @@ const IntroVideoComponent = ({setIntroVideoState,setTossState}) => {
     }
 
   return (
-    <div><ReactPlayer url={introVideo} playing muted onEnded={onEndedHandler}/></div>
+    <div><ReactPlayer url={introVideo} width='100%' height='100%' playing muted onEnded={onEndedHandler} /></div>
   )
 }
 

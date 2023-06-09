@@ -29,11 +29,11 @@ const TossCardComponent = ({setTossCardState, setLoadingState,setTossWin,setToss
     
 
   return (
-    <div className='flex flex-col justify-center items-center  w-[400px] h-[200px] bg-red-500'>
-        <div><h1>Choose</h1></div>
+    <div className='flex flex-col justify-center items-center h-[288px]'>
+        <div><h1 className='mb-[40px] text-3xl bg-clip-text text-transparent bg-gradient-to-l from-bl to-br font-bold'>Toss</h1></div>
         <div className='flex '>
-            <button onClick={onclickHeadsHandler}><div className='flex justify-center items-center h-[30px] w-[60px] bg-white'>Heads</div></button>
-            <button onClick={onclickTailsHandler}><div className='flex justify-center items-center h-[30px] w-[60px] bg-white'>Tails</div></button>
+            <button onClick={onclickHeadsHandler}><div className='m-4 text-black font-medium flex justify-center items-center h-[30px] w-[80px] bg-gradient-to-l from-bl to-br rounded-2xl'>Heads</div></button>
+            <button onClick={onclickTailsHandler}><div className='m-4 text-black font-medium flex justify-center items-center h-[30px] w-[80px] bg-gradient-to-l from-bl to-br rounded-2xl'>Tails</div></button>
         </div>
     </div>
   )

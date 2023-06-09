@@ -17,11 +17,13 @@ const Testing = () => {
     const {account, Contract, checkIfWalletIsConnected } = useContext(Web3Context);
     console.log(Contract)
   return (
-    <div>
-        {introVideoState && <IntroVideoComponent setIntroVideoState={setIntroVideoState} setTossState={setTossState}/> }
-        {tossState && <Toss setGameState={setGameState} setTossState={setTossState} setCurrentPlayerState={setCurrentPlayerState}/>}
-        {gameState && <GameComponent currentPlayerState={currentPlayerState} setCurrentPlayerState={setCurrentPlayerState}/>}
-    </div>
+      
+      <div className=" bg-backGround bg-cover w-screen h-screen flex justify-center items-center" >
+        {introVideoState && (<div className=' w-[500px] border-8 border-gradientLeft rounded-lg'><IntroVideoComponent setIntroVideoState={setIntroVideoState} setTossState={setTossState}/> </div>)}
+        {tossState && (<div className=' w-[500px] border-8 border-gradientLeft rounded-lg'><Toss setGameState={setGameState} setTossState={setTossState} setCurrentPlayerState={setCurrentPlayerState}/> </div>)}          
+          {gameState && (<GameComponent currentPlayerState={currentPlayerState} setCurrentPlayerState={setCurrentPlayerState}/>)} 
+      </div>
+ 
   )
 }
 

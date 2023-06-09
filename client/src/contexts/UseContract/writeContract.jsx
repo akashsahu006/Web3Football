@@ -30,4 +30,11 @@ const penaltyShoot = async (contract,account,interFace, option) => {
     return t
 }
 
-export {getRequestRandomWords,callToss,updatePlayerState, penaltyShoot}
+const resetGame = async(contract,account) =>{
+    if(!contract){
+        return false;
+    }
+    await contract.methods.reset().send({from:account.currentAccount})
+}
+
+export {getRequestRandomWords,callToss,updatePlayerState, penaltyShoot, resetGame}

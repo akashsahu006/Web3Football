@@ -4,7 +4,7 @@ import TossLostCard from './TossLostCard'
 
 const TossResultCard = ({tossWin, setGameState,setTossState,setCurrentPlayerState}) => {
   return (
-    <div>
+    <div className='flex flex-col justify-center items-center h-[288px]'>
       {tossWin && <TossWinCard setGameState={setGameState} setTossState={setTossState} setCurrentPlayerState={setCurrentPlayerState}/>}
       {!(tossWin) && <TossLostCard setGameState={setGameState} setTossState={setTossState} setCurrentPlayerState={setCurrentPlayerState}/>}
     </div>

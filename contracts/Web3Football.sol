@@ -21,11 +21,12 @@ contract Web3Football is VRFConsumerBaseV2, ConfirmedOwner {
     uint8 public shoot_counter = 0;
     uint8 public round_counter;
     round_winner status = round_winner.MATCH_GOING_ON;
-    uint256[20] public randomNumbers;
+    uint256[] public randomNumbers;
     uint8[] team1Ratings = [3, 1, 1, 2, 3, 2];
     uint8[] team2Ratings = [2, 3, 3, 1, 1, 2];
     uint8 public team1Score = 0;
     uint8 public team2Score = 0;
+    uint8 public roundNumber = 0;
 
     function initialize_array() public {
         randomNumbers[0] = 52592424;
@@ -41,7 +42,6 @@ contract Web3Football is VRFConsumerBaseV2, ConfirmedOwner {
     }
 
     uint8 public playerState;
-    uint8 public roundNumber = 0;
 
     function updatePlayerState(uint8 choice) public {
         playerState = choice;
@@ -152,10 +152,10 @@ contract Web3Football is VRFConsumerBaseV2, ConfirmedOwner {
         //logic for interface 1
         if (penalty_interface == 1 && playerState == 1) {
             require(
-                user_choice >= 0 && user_choice <= 1,
+                user_choice >= 1 && user_choice <= 2,
                 "Invalid choice from player"
             );
-            uint256 computer_choice = randomNumbers[roundNumber] % 2;
+            uint256 computer_choice = (randomNumbers[roundNumber] % 2) + 1;
 
             if (user_choice == computer_choice) {
                 Shoot_Detail[roundNumber].shoot_completed = true;
@@ -180,10 +180,11 @@ contract Web3Football is VRFConsumerBaseV2, ConfirmedOwner {
 
         if (penalty_interface == 1 && playerState == 2) {
             require(
-                user_choice >= 0 && user_choice <= 1,
+                user_choice >= 1 && user_choice <= 2,
                 "Invalid choice from player"
             );
-            uint256 computer_choice = randomNumbers[roundNumber] % 2;
+            uint256 computer_choice = (randomNumbers[roundNumber] % 2) + 1;
+
             if (user_choice == computer_choice) {
                 Shoot_Detail[roundNumber].shoot_completed = true;
                 Shoot_Detail[roundNumber].Winner_playerType = shoot_winner
@@ -209,10 +210,10 @@ contract Web3Football is VRFConsumerBaseV2, ConfirmedOwner {
         //add 1 to user choice as indexing starts from 0
         if (penalty_interface == 2 && playerState == 1) {
             require(
-                user_choice >= 0 && user_choice <= 3,
+                user_choice >= 1 && user_choice <= 4,
                 "Invalid choice from player"
             );
-            uint256 computer_choice = randomNumbers[shoot_counter] % 4;
+            uint256 computer_choice = (randomNumbers[roundNumber] % 4) + 1;
             if (user_choice == computer_choice) {
                 Shoot_Detail[roundNumber].shoot_completed = true;
                 Shoot_Detail[roundNumber].Winner_playerType = shoot_winner
@@ -236,10 +237,10 @@ contract Web3Football is VRFConsumerBaseV2, ConfirmedOwner {
 
         if (penalty_interface == 2 && playerState == 2) {
             require(
-                user_choice >= 0 && user_choice <= 3,
+                user_choice >= 1 && user_choice <= 4,
                 "Invalid choice from player"
             );
-            uint256 computer_choice = randomNumbers[shoot_counter] % 4;
+            uint256 computer_choice = (randomNumbers[roundNumber] % 4) + 1;
             if (user_choice == computer_choice) {
                 Shoot_Detail[roundNumber].shoot_completed = true;
                 Shoot_Detail[roundNumber].Winner_playerType = shoot_winner
@@ -265,10 +266,10 @@ contract Web3Football is VRFConsumerBaseV2, ConfirmedOwner {
 
         if (penalty_interface == 3 && playerState == 1) {
             require(
-                user_choice >= 0 && user_choice <= 7,
+                user_choice >= 1 && user_choice <= 8,
                 "Invalid choice from player"
             );
-            uint256 computer_choice = randomNumbers[shoot_counter] % 8;
+            uint256 computer_choice = (randomNumbers[roundNumber] % 8) + 1;
             if (user_choice == computer_choice) {
                 Shoot_Detail[roundNumber].shoot_completed = true;
                 Shoot_Detail[roundNumber].Winner_playerType = shoot_winner
@@ -292,10 +293,10 @@ contract Web3Football is VRFConsumerBaseV2, ConfirmedOwner {
 
         if (penalty_interface == 3 && playerState == 2) {
             require(
-                user_choice >= 0 && user_choice <= 7,
+                user_choice >= 1 && user_choice <= 8,
                 "Invalid choice from player"
             );
-            uint256 computer_choice = randomNumbers[shoot_counter] % 8;
+            uint256 computer_choice = (randomNumbers[roundNumber] % 8) + 1;
             if (user_choice == computer_choice) {
                 Shoot_Detail[roundNumber].shoot_completed = true;
                 Shoot_Detail[roundNumber].Winner_playerType = shoot_winner
@@ -328,16 +329,21 @@ contract Web3Football is VRFConsumerBaseV2, ConfirmedOwner {
     function round_result_check() external view returns (uint8) {
         uint8 curr_team1 = team1Score;
         uint8 curr_team2 = team2Score;
-        if (shoot_counter < 10) {
+        if (roundNumber <= 10) {
             uint8 potential_team1;
             uint8 potential_team2;
 
-            if (shoot_counter % 2 == 1) {
-                potential_team1 = 5 - ((roundNumber + 1) / 2) + curr_team1;
-                potential_team2 = 5 - ((roundNumber + 1) / 2) + curr_team2;
-            } else {
-                potential_team1 = 5 - ((roundNumber) / 2) - 1 + curr_team1;
+            if (roundNumber % 2 == 0) {
+                potential_team1 = 5 - ((roundNumber) / 2) + curr_team1;
                 potential_team2 = 5 - ((roundNumber) / 2) + curr_team2;
+            } else {
+                if (playerState == 2) {
+                    potential_team1 = 5 - ((roundNumber) / 2) + curr_team1;
+                    potential_team2 = 5 - ((roundNumber) / 2) - 1 + curr_team2;
+                } else {
+                    potential_team1 = 5 - ((roundNumber) / 2) - 1 + curr_team1;
+                    potential_team2 = 5 - ((roundNumber) / 2) + curr_team2;
+                }
             }
 
             if (curr_team1 > potential_team2) {
@@ -388,9 +394,10 @@ contract Web3Football is VRFConsumerBaseV2, ConfirmedOwner {
 
     function reset() public {
         shoot_counter = 0;
+        roundNumber = 0;
         team1Score = 0;
         team2Score = 0;
-        roundNumber = 0;
+        playerState = 0;
     }
 
     function score_team1() external view returns (uint8) {
@@ -492,7 +499,7 @@ contract Web3Football is VRFConsumerBaseV2, ConfirmedOwner {
         if (_randomWords[0] % 2 == 0) {
             s_requests[_requestId].didWin = true;
         }
-        // randomNumbers = _randomWords;
+        randomNumbers = _randomWords;
         emit RequestFulfilled(_requestId, _randomWords);
     }
 
