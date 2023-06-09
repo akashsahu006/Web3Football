@@ -1,15 +1,24 @@
-import React,{useContext, useEffect} from 'react'
+import React,{useContext, useEffect, useState} from 'react'
 import { Link } from "react-router-dom";
 import Web3Context from '../contexts';
 import { getRequestRandomWords, resetGame} from '../contexts/UseContract/writeContract';
 import { getLastId, getStatus } from '../contexts/UseContract/readContract';
 import HeroFootball from '../components/HeroFootball';
+import glowFootball from "../assets/images/glowCropped.png"
 
 const Home = () => {
-const {account, Contract, checkIfWalletIsConnected } = useContext(Web3Context);
+const {account, Contract, checkIfWalletIsConnected,connectWallet } = useContext(Web3Context);
+const [connected,setConnected] = useState(false);
   useEffect(() => {
     checkIfWalletIsConnected();
   }, []);
+
+  const func = async () => {
+    await connectWallet()
+    const t =  await checkIfWalletIsConnected();
+    setConnected(t);
+    console.log(t);
+  }
 
   const onClickPlayHandler = async () => {
     console.log("clickes");
@@ -28,17 +37,26 @@ const {account, Contract, checkIfWalletIsConnected } = useContext(Web3Context);
   console.log(Contract)
   return (
     // 
-    <div className='w-screen h-screen bg-gradient-to-br from-gradientLeft to-gradientRight'>
-        <div className='w-screen flex'>
+    <div className=' w-screen h-screen p-0'>
+        <div className='bg-landingBg  bg-cover h-screen w-screen flex flex-col'>
+          <div className='flex justify-between items-center mt-2 mx-7 h-[50px]'>
+            <img  src={glowFootball} className='animate-spin-slow w-[40px] h-[40px]' alt="" />
+            <button onClick={func}>{connected && <h1 className='m-4 text-black font-medium flex justify-center items-center h-[30px] w-[100px] bg-gradient-to-l from-bl to-br rounded-2xl'>Connected</h1>}{!(connected) && <h1 className='m-4 text-black text-sm font-medium flex justify-center items-center h-[30px] w-[130px] bg-gradient-to-l from-bl to-br rounded-2xl'>Connect Metamask</h1>}</button>
+          </div>
           <div className='w-1/2 text-white'>
-            <div>
-              <button onClick={onClickPlayHandler} className='bg-cyan-200'>random numbers</button>
+            <div className='ml-6 h-[260px] flex flex-col justify-end'>
+              {/* <button onClick={onClickPlayHandler} className='bg-cyan-200'>random numbers</button>
               <button onClick={onClickRandomNumberHandler}>Random number getter</button>
               <button onClick={onResetHandler}>Reset</button>
-              <Link to={"/Testing"}><button className='text-blue-500 ' >Play</button></Link>
+              <Link to={"/Testing"}><button className='text-blue-500 ' >Play</button></Link> */}
+              <h1 className='text-[2.5rem] bg-clip-text text-transparent bg-gradient-to-l from-bl to-br font-bold' >Welcome to </h1>
+              <h1 className='text-[3rem] bg-clip-text text-transparent bg-gradient-to-l from-bl to-br font-bold '>Web3Football</h1>
+              <h1 className='text-[0.8rem] ml-1 mt-2'>Unlock your favourite player cards. Build your own team. Play penalty shootout. Win game points. Redeem points to upgrade your team</h1>
+            </div>
+            <div className='flex justify-center mt-4'>
+            {connected && <Link to={"/Game"}><button><h1 className='m-4 text-black font-medium flex justify-center items-center h-[30px] w-[100px] bg-gradient-to-l from-bl to-br rounded-2xl'>Play</h1></button></Link>}
             </div>
           </div>
-          <div className='w-1/2'><HeroFootball/></div>
         </div>
     </div>
   )

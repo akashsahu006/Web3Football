@@ -53,8 +53,10 @@ const Web3Provider = ({ children }) => {
 
     if (accounts.length !== 0) {
       getContract(chain, accounts);
+      return true;
     } else {
       console.log('No authorized account found');
+      return false;
     }
   };
   const getContract = (chain, accounts) => {
