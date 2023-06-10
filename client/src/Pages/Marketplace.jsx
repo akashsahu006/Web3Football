@@ -14,6 +14,8 @@ import p11 from "../assets/images/players/11.png"
 import p12 from "../assets/images/players/12.png"
 import p13 from "../assets/images/players/13.png"
 import p14 from "../assets/images/players/14.png"
+import g0 from "../assets/images/keepers/0.png"
+import g1 from "../assets/images/keepers/1.png"
 import {Link} from "react-router-dom"
 
 
@@ -31,14 +33,16 @@ const Marketplace = () => {
 
                 </div>
             </div>
-           <div className='grid grid-cols-7 gap-4 mt-3'>
+           <div className='grid grid-cols-8 gap-4 mt-3'>
                 <img src={p0} className=" cursor-pointer w-[80px]"alt="" />
                 <img src={p1}  className="cursor-pointer w-[80px]" alt="" />
                 <img src={p2} className="cursor-pointer w-[80px]" alt="" />
+                <img src={g0} className="cursor-pointer w-[80px]" alt="" />
                 <img src={p3} className="cursor-pointer w-[80px]" alt="" />
                 <img src={p4} className="cursor-pointer w-[80px]" alt="" />
                 <img src={p5} className="cursor-pointer w-[80px]" alt="" />
                 <img src={p6} className="cursor-pointer w-[80px]" alt="" />
+                <img src={g1} className="cursor-pointer w-[80px]" alt="" />
                 <img src={p8} className="cursor-pointer w-[80px]" alt="" />
                 <img src={p9} className="cursor-pointer w-[80px]" alt="" />
                 <img src={p10} className="cursor-pointer w-[80px]" alt="" />

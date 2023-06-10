@@ -1,6 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react'
-import { getInterface, getPlayerState, getComputerScore, getPlayerScore, checkResult, getRoundNumber } from '../../contexts/UseContract/readContract';
-import { updatePlayerState, penaltyShoot } from '../../contexts/UseContract/writeContract';
+import { getInterface, getPlayerState, checkResult, getRoundNumber, penaltyShoot } from '../../contexts/UseContract/readContract';
 import Web3Context from '../../contexts';
 import {Link} from "react-router-dom"
 import glowFootball from "../../assets/images/glowFootball.png"
@@ -49,11 +48,57 @@ const GameComponent = ({currentPlayerState, setCurrentPlayerState}) => {
 
     const [round, setRound] = useState(0);
     const [playerScoreRecord, setPlayerScoreRecord] = useState([])
-    const [oldPS, setOldPS] = useState(0);
 
     const [computerScoreRecord, setComputerScoreRecord] = useState([])
-    const [oldCS, setOldCS] = useState(0);
 
+
+    ////shootout logic
+     
+      const [shootNumber, setShootNumber] = useState(0);
+
+      const onClickShoot = async (option) => {
+        setInterfaceState(false);
+        setIsLoading(true);
+        await penaltyShoot(Contract, interFace.value, option, shootNumber).then(async (data) => {
+            setIsLoading(false);
+            
+
+            if(currentPlayerState ===1 && !(data)){
+                setComputerScore(computerScore+1);
+                setComputerScoreRecord(computerScoreRecord=> [...computerScoreRecord,1]);
+                setGoalScoredState(true);
+                
+            }
+            else if(currentPlayerState === 1 && data){
+                setComputerScoreRecord(computerScoreRecord=> [...computerScoreRecord,0]);
+                setGoalSavedState(true);
+            }
+            else if(currentPlayerState ===2 && data){
+                setPlayerScore(playerScore+1);
+                setPlayerScoreRecord(playerScoreRecord => [...playerScoreRecord, 1]);
+                setGoalScoredState(true);
+            }
+            else if(currentPlayerState === 2 && !(data)){
+                setPlayerScoreRecord(playerScoreRecord => [...playerScoreRecord, 0]);
+                setGoalSavedState(true);
+            }
+            console.log("shoot number",shootNumber, interFace.value)
+            
+            if(currentPlayerState === 1){
+                setCurrentPlayerState(2);
+            }
+            else{
+                setCurrentPlayerState(1);
+            }
+            const tempShootNumber = shootNumber + 1;
+            
+            const t = await getInterface(Contract, tempShootNumber, currentPlayerState);
+            console.log(interFace.value);
+            setInterFace({value:t});
+            setShootNumber(shootNumber+1);
+        })
+
+      }
 
       useEffect(() => {
         console.log(playerScoreRecord,computerScoreRecord)
@@ -183,65 +228,65 @@ const GameComponent = ({currentPlayerState, setCurrentPlayerState}) => {
         )
     }
     
-    const onClickShoot = async (option) => {
-        setInterfaceState(false);
-        setIsLoading(true);
-        // const ps = playerScore;
-        // const cs = computerScore;
-        // console.log("Before",ps,cs);
-        await penaltyShoot(Contract,account,interFace.value,option)
-        await getPlayerScore(Contract).then((data)=>{
-            // console.log("AfterinsidePs:",data);
-            if(currentPlayerState === 2){
-                if(oldPS === data){
-                    setPlayerScoreRecord(playerScoreRecord => [...playerScoreRecord, 0]);
-                    setIsLoading(false);
-                    setGoalSavedState(true);
-                }
-                else{
-                    setPlayerScoreRecord(playerScoreRecord => [...playerScoreRecord, 1]);
-                    setOldPS(data);
-                    setIsLoading(false);
-                    setGoalScoredState(true);
-                }
-                setCurrentPlayerState(1);
+    // const onClickShoot = async (option) => {
+    //     setInterfaceState(false);
+    //     setIsLoading(true);
+    //     // const ps = playerScore;
+    //     // const cs = computerScore;
+    //     // console.log("Before",ps,cs);
+    //     await penaltyShoot(Contract,account,interFace.value,option)
+    //     await getPlayerScore(Contract).then((data)=>{
+    //         // console.log("AfterinsidePs:",data);
+    //         if(currentPlayerState === 2){
+    //             if(oldPS === data){
+    //                 setPlayerScoreRecord(playerScoreRecord => [...playerScoreRecord, 0]);
+    //                 setIsLoading(false);
+    //                 setGoalSavedState(true);
+    //             }
+    //             else{
+    //                 setPlayerScoreRecord(playerScoreRecord => [...playerScoreRecord, 1]);
+    //                 setOldPS(data);
+    //                 setIsLoading(false);
+    //                 setGoalScoredState(true);
+    //             }
+    //             setCurrentPlayerState(1);
 
-            }
-            setPlayerScore(data)
-        });
-        await getComputerScore(Contract).then((data)=>{
-            // console.log("AfterinsideCd:",cs);
-            if(currentPlayerState === 1){
-                if(oldCS === data){
-                    setComputerScoreRecord(computerScoreRecord => [...computerScoreRecord, 0])
-                    setIsLoading(false);
-                    setGoalSavedState(true);
-                }
-                else{
-                    setComputerScoreRecord(computerScoreRecord => [...computerScoreRecord, 1])
-                    setOldCS(data);
-                    setIsLoading(false);
-                    setGoalScoredState(true);
-                }
-                setCurrentPlayerState(2);
+    //         }
+    //         setPlayerScore(data)
+    //     });
+    //     await getComputerScore(Contract).then((data)=>{
+    //         // console.log("AfterinsideCd:",cs);
+    //         if(currentPlayerState === 1){
+    //             if(oldCS === data){
+    //                 setComputerScoreRecord(computerScoreRecord => [...computerScoreRecord, 0])
+    //                 setIsLoading(false);
+    //                 setGoalSavedState(true);
+    //             }
+    //             else{
+    //                 setComputerScoreRecord(computerScoreRecord => [...computerScoreRecord, 1])
+    //                 setOldCS(data);
+    //                 setIsLoading(false);
+    //                 setGoalScoredState(true);
+    //             }
+    //             setCurrentPlayerState(2);
 
-            }
+    //         }
 
-            setComputerScore(data)}
-            );
-        console.log("Update",playerScore,computerScore);
+    //         setComputerScore(data)}
+    //         );
+    //     console.log("Update",playerScore,computerScore);
         
-        setRound(round +1);
+    //     setRound(round +1);
 
-        const t =await getInterface(Contract)
-        setInterFace({value:t})
+    //     const t =await getInterface(Contract)
+    //     setInterFace({value:t})
         
         
         
-        // console.log(interFace);
-        // console.log(playerScore, computerScore);
+    //     // console.log(interFace);
+    //     // console.log(playerScore, computerScore);
 
-    }
+    // }
 
     const GameOpeningComponent = () => {
         return (
@@ -254,14 +299,14 @@ const GameComponent = ({currentPlayerState, setCurrentPlayerState}) => {
     const onClickLetsPlay = async () => {
         setGameOpeningState(false);
         setIsLoading(true);
-        await updatePlayerState(Contract,account,currentPlayerState);
-        const t = await getInterface(Contract);
+        // await updatePlayerState(Contract,account,currentPlayerState);
+        const t = await getInterface(Contract, shootNumber,currentPlayerState);
         console.log(t);
         await setInterFace({value:t});
         
         
         
-        await getPlayerState(Contract).then((data)=> console.log(data))
+        // await getPlayerState(Contract).then((data)=> console.log(data))
         setIsLoading(false)
         setInterfaceState(true)
         
@@ -274,7 +319,7 @@ const GameComponent = ({currentPlayerState, setCurrentPlayerState}) => {
     const[ goalScoredState, setGoalScoredState] = useState(false);
     const onGoalEnded = async () => {
         await getRoundNumber(Contract).then(async (data)=> {
-            const res = await checkResult(Contract);
+            const res = await checkResult(Contract,playerScore, computerScore,shootNumber, currentPlayerState);
             console.log(`Round is ${data}`)
             console.log(playerScore,computerScore)
 
@@ -300,7 +345,7 @@ const GameComponent = ({currentPlayerState, setCurrentPlayerState}) => {
     const[ goalSavedState, setGoalSavedState] = useState(false);
     const onSaveEnded = async () => {
         await getRoundNumber(Contract).then(async (data)=> {
-            const res = await checkResult(Contract);
+            const res = await checkResult(Contract,playerScore, computerScore,shootNumber, currentPlayerState);
             console.log(`Round is ${data}`)
             console.log(playerScore,computerScore)
 

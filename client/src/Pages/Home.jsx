@@ -58,7 +58,7 @@ const [connected,setConnected] = useState(false);
             <div className='flex flex-row items-center'>
               <img  src={glowFootball} className='animate-spin-slow w-[40px] h-[40px] mr-6' alt="" />
               {connected && <Link to={"/Yourcards"}><h1 className='underline decoration-bl decoration-solid decoration-1 underline-offset-4 hover:decoration-ebl bg-clip-text text-transparent bg-gradient-to-l from-bl to-br font-bold'>Your cards</h1></Link>}
-              {connected && <Link to={"/Marketplace"}><h1 className='ml-4 underline decoration-bl decoration-solid decoration-1 underline-offset-4 hover:decoration-ebl bg-clip-text text-transparent bg-gradient-to-l from-bl to-br font-bold'>marketplace</h1></Link>}
+              {connected && <Link to={"/Marketplace"}><h1 className='ml-4 underline decoration-bl decoration-solid decoration-1 underline-offset-4 hover:decoration-ebl bg-clip-text text-transparent bg-gradient-to-l from-bl to-br font-bold'>Marketplace</h1></Link>}
               {connected && <Link to={"/Marketplace"}><h1 className='ml-4 underline decoration-bl decoration-solid decoration-1 underline-offset-4 hover:decoration-ebl bg-clip-text text-transparent bg-gradient-to-l from-bl to-br font-medium'>160 Points</h1></Link>}
 
             </div>
@@ -67,7 +67,7 @@ const [connected,setConnected] = useState(false);
           </div>
           <div className='w-1/2 text-white'>
             <div className='ml-6 h-[260px] flex flex-col justify-end'>
-              {/* <button onClick={onClickPlayHandler} className='bg-cyan-200'>random numbers</button> */}
+              <button onClick={onClickPlayHandler} className='bg-cyan-200'>random numbers</button>
               <button onClick={onClickRandomNumberHandler}>Random number getter</button>
               <button onClick={onResetHandler}>Reset</button>
               {/* <Link to={"/Testing"}><button className='text-blue-500 ' >Play</button></Link> */}

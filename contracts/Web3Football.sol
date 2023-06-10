@@ -27,6 +27,12 @@ contract Web3Football is VRFConsumerBaseV2, ConfirmedOwner {
     uint8 public team2Score = 0;
     uint8 public roundNumber = 0;
 
+    mapping(address => uint256) public playerBalance;
+
+    function getPlayerBalance() public view returns (uint256) {
+        return playerBalance[msg.sender];
+    }
+
     function initialize_array() public {
         randomNumbers[0] = 52592424;
         randomNumbers[1] = 896276886;
@@ -124,12 +130,15 @@ contract Web3Football is VRFConsumerBaseV2, ConfirmedOwner {
     //return?
     event testi(uint8 shoot_counter, uint8 Team1_Lvl, uint8 Team2_Lvl); //team 1 lvl is goalkeeper level and team 2 levelis striker level
 
-    function interface_Selection() external view returns (uint8) {
+    function interface_Selection(
+        uint8 _shootNumber,
+        uint8 _playerState
+    ) external view returns (uint8) {
         uint8 goalkeeper;
         uint8 striker;
-        uint8 index = (roundNumber % 10) / 2;
+        uint8 index = (_shootNumber % 10) / 2;
 
-        if (playerState == 2) {
+        if (_playerState == 2) {
             striker = team1Ratings[index];
             goalkeeper = team2Ratings[5];
         } else {
@@ -149,231 +158,78 @@ contract Web3Football is VRFConsumerBaseV2, ConfirmedOwner {
     //this function will process the random number and check the result
     function penalty_shoot(
         uint8 penalty_interface,
-        uint8 user_choice
-    ) external {
+        uint8 user_choice,
+        uint8 _shootNumber
+    ) public view returns (bool res) {
         //logic for interface 1
-        if (penalty_interface == 1 && playerState == 1) {
-            require(
-                user_choice >= 1 && user_choice <= 2,
-                "Invalid choice from player"
-            );
-            uint256 computer_choice = (randomNumbers[roundNumber] % 2) + 1;
+        if (penalty_interface == 1) {
+            uint256 computer_choice = (randomNumbers[_shootNumber] % 2) + 1;
 
             if (user_choice == computer_choice) {
-                Shoot_Detail[roundNumber].shoot_completed = true;
-                Shoot_Detail[roundNumber].Winner_playerType = shoot_winner
-                    .GOALKEEPER;
-                Shoot_Detail[roundNumber].ShootWinner_Team = team_shoot_winner
-                    .team1;
-
-                Round_Detail[round_counter].no_of_shoots = roundNumber;
-                // Round_Detail[round_counter].team1_score += 1;
+                return false;
             } else {
-                Shoot_Detail[roundNumber].shoot_completed = true;
-                Shoot_Detail[roundNumber].Winner_playerType = shoot_winner
-                    .STRIKER;
-                Shoot_Detail[roundNumber].ShootWinner_Team = team_shoot_winner
-                    .team2;
-
-                Round_Detail[round_counter].no_of_shoots = roundNumber;
-                team2Score += 1;
+                return true;
             }
         }
-
-        if (penalty_interface == 1 && playerState == 2) {
-            require(
-                user_choice >= 1 && user_choice <= 2,
-                "Invalid choice from player"
-            );
-            uint256 computer_choice = (randomNumbers[roundNumber] % 2) + 1;
-
-            if (user_choice == computer_choice) {
-                Shoot_Detail[roundNumber].shoot_completed = true;
-                Shoot_Detail[roundNumber].Winner_playerType = shoot_winner
-                    .GOALKEEPER;
-                Shoot_Detail[roundNumber].ShootWinner_Team = team_shoot_winner
-                    .team2;
-
-                Round_Detail[round_counter].no_of_shoots = shoot_counter;
-                // Round_Detail[round_counter].team2_score += 1;
-            } else {
-                Shoot_Detail[roundNumber].shoot_completed = true;
-                Shoot_Detail[roundNumber].Winner_playerType = shoot_winner
-                    .STRIKER;
-                Shoot_Detail[roundNumber].ShootWinner_Team = team_shoot_winner
-                    .team1;
-
-                Round_Detail[round_counter].no_of_shoots = roundNumber;
-                team1Score += 1;
-            }
-        }
-
         //logic for interface 2
-        //add 1 to user choice as indexing starts from 0
-        if (penalty_interface == 2 && playerState == 1) {
-            require(
-                user_choice >= 1 && user_choice <= 4,
-                "Invalid choice from player"
-            );
-            uint256 computer_choice = (randomNumbers[roundNumber] % 4) + 1;
+        if (penalty_interface == 2) {
+            uint256 computer_choice = (randomNumbers[_shootNumber] % 4) + 1;
             if (user_choice == computer_choice) {
-                Shoot_Detail[roundNumber].shoot_completed = true;
-                Shoot_Detail[roundNumber].Winner_playerType = shoot_winner
-                    .GOALKEEPER;
-                Shoot_Detail[roundNumber].ShootWinner_Team = team_shoot_winner
-                    .team1;
-
-                Round_Detail[round_counter].no_of_shoots = roundNumber;
-                // Round_Detail[round_counter].team1_score += 1;
+                return false;
             } else {
-                Shoot_Detail[roundNumber].shoot_completed = true;
-                Shoot_Detail[roundNumber].Winner_playerType = shoot_winner
-                    .STRIKER;
-                Shoot_Detail[roundNumber].ShootWinner_Team = team_shoot_winner
-                    .team2;
-
-                Round_Detail[round_counter].no_of_shoots = roundNumber;
-                team2Score += 1;
-            }
-        }
-
-        if (penalty_interface == 2 && playerState == 2) {
-            require(
-                user_choice >= 1 && user_choice <= 4,
-                "Invalid choice from player"
-            );
-            uint256 computer_choice = (randomNumbers[roundNumber] % 4) + 1;
-            if (user_choice == computer_choice) {
-                Shoot_Detail[roundNumber].shoot_completed = true;
-                Shoot_Detail[roundNumber].Winner_playerType = shoot_winner
-                    .GOALKEEPER;
-                Shoot_Detail[roundNumber].ShootWinner_Team = team_shoot_winner
-                    .team2;
-
-                Round_Detail[round_counter].no_of_shoots = roundNumber;
-                // Round_Detail[round_counter].team2_score += 1;
-            } else {
-                Shoot_Detail[roundNumber].shoot_completed = true;
-                Shoot_Detail[roundNumber].Winner_playerType = shoot_winner
-                    .STRIKER;
-                Shoot_Detail[roundNumber].ShootWinner_Team = team_shoot_winner
-                    .team1;
-
-                Round_Detail[round_counter].no_of_shoots = roundNumber;
-                team1Score += 1;
+                return true;
             }
         }
 
         //logic for interface 3
-
-        if (penalty_interface == 3 && playerState == 1) {
-            require(
-                user_choice >= 1 && user_choice <= 8,
-                "Invalid choice from player"
-            );
-            uint256 computer_choice = (randomNumbers[roundNumber] % 8) + 1;
+        if (penalty_interface == 3) {
+            uint256 computer_choice = (randomNumbers[_shootNumber] % 8) + 1;
             if (user_choice == computer_choice) {
-                Shoot_Detail[roundNumber].shoot_completed = true;
-                Shoot_Detail[roundNumber].Winner_playerType = shoot_winner
-                    .GOALKEEPER;
-                Shoot_Detail[roundNumber].ShootWinner_Team = team_shoot_winner
-                    .team1;
-
-                Round_Detail[round_counter].no_of_shoots = roundNumber;
-                // Round_Detail[round_counter].team1_score += 1;
+                return false;
             } else {
-                Shoot_Detail[roundNumber].shoot_completed = true;
-                Shoot_Detail[roundNumber].Winner_playerType = shoot_winner
-                    .STRIKER;
-                Shoot_Detail[roundNumber].ShootWinner_Team = team_shoot_winner
-                    .team2;
-
-                Round_Detail[round_counter].no_of_shoots = roundNumber;
-                team2Score += 1;
+                return true;
             }
         }
-
-        if (penalty_interface == 3 && playerState == 2) {
-            require(
-                user_choice >= 1 && user_choice <= 8,
-                "Invalid choice from player"
-            );
-            uint256 computer_choice = (randomNumbers[roundNumber] % 8) + 1;
-            if (user_choice == computer_choice) {
-                Shoot_Detail[roundNumber].shoot_completed = true;
-                Shoot_Detail[roundNumber].Winner_playerType = shoot_winner
-                    .GOALKEEPER;
-                Shoot_Detail[roundNumber].ShootWinner_Team = team_shoot_winner
-                    .team2;
-
-                Round_Detail[round_counter].no_of_shoots = roundNumber;
-                // Round_Detail[round_counter].team2_score += 1;
-            } else {
-                Shoot_Detail[roundNumber].shoot_completed = true;
-                Shoot_Detail[roundNumber].Winner_playerType = shoot_winner
-                    .STRIKER;
-                Shoot_Detail[roundNumber].ShootWinner_Team = team_shoot_winner
-                    .team1;
-
-                Round_Detail[round_counter].no_of_shoots = roundNumber;
-                team1Score += 1;
-            }
-        }
-        if (playerState == 1) {
-            playerState = 2;
-        } else {
-            playerState = 1;
-        }
-        roundNumber = roundNumber + 1;
     }
 
     //this function will check the round result by comparing score
-    function round_result_check() external view returns (uint8) {
-        uint8 curr_team1 = team1Score;
-        uint8 curr_team2 = team2Score;
-        if (roundNumber <= 10) {
+    function round_result_check(
+        uint8 _team1Score,
+        uint8 _team2Score,
+        uint8 shootNumber,
+        uint8 _playerState
+    ) external pure returns (uint8) {
+        uint8 curr_team1 = _team1Score;
+        uint8 curr_team2 = _team2Score;
+        if (shootNumber <= 10) {
             uint8 potential_team1;
             uint8 potential_team2;
 
-            if (roundNumber % 2 == 0) {
-                potential_team1 = 5 - ((roundNumber) / 2) + curr_team1;
-                potential_team2 = 5 - ((roundNumber) / 2) + curr_team2;
+            if (shootNumber % 2 == 0) {
+                potential_team1 = 5 - ((shootNumber) / 2) + curr_team1;
+                potential_team2 = 5 - ((shootNumber) / 2) + curr_team2;
             } else {
-                if (playerState == 2) {
-                    potential_team1 = 5 - ((roundNumber) / 2) + curr_team1;
-                    potential_team2 = 5 - ((roundNumber) / 2) - 1 + curr_team2;
+                if (_playerState == 2) {
+                    potential_team1 = 5 - ((shootNumber) / 2) + curr_team1;
+                    potential_team2 = 5 - ((shootNumber) / 2) - 1 + curr_team2;
                 } else {
-                    potential_team1 = 5 - ((roundNumber) / 2) - 1 + curr_team1;
-                    potential_team2 = 5 - ((roundNumber) / 2) + curr_team2;
+                    potential_team1 = 5 - ((shootNumber) / 2) - 1 + curr_team1;
+                    potential_team2 = 5 - ((shootNumber) / 2) + curr_team2;
                 }
             }
 
             if (curr_team1 > potential_team2) {
-                // Round_Detail[round_counter].round_complete = true;
-                // Round_Detail[round_counter].Round_Winner = round_winner.TEAM1;
-                // status = round_winner.TEAM1;
                 return 1; //returning 1 means that team 1 has won(player)
             } else if (curr_team2 > potential_team1) {
-                // Round_Detail[round_counter].round_complete = true;
-                // Round_Detail[round_counter].Round_Winner = round_winner.TEAM2;
-                // status = round_winner.TEAM2;
                 return 2; //returning 2 means that team 2 has won(computer)
             } else {
                 return 0; //match is still going on
             }
         } else {
-            if (roundNumber % 2 == 0) {
+            if (shootNumber % 2 == 0) {
                 if (curr_team1 > curr_team2) {
-                    // Round_Detail[round_counter].round_complete = true;
-                    // Round_Detail[round_counter].Round_Winner = round_winner
-                    // .TEAM1;
-                    // status = round_winner.TEAM1;
                     return 1;
                 } else if (curr_team1 < curr_team2) {
-                    // Round_Detail[round_counter].round_complete = true;
-                    // Round_Detail[round_counter].Round_Winner = round_winner
-                    // .TEAM2;
-                    // status = round_winner.TEAM2;
                     return 2;
                 } else {
                     return 0;
