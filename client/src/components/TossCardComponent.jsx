@@ -1,10 +1,14 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import Web3Context from '../contexts'
 import { callToss } from '../contexts/UseContract/writeContract';
 import { getWinOrLose } from '../contexts/UseContract/readContract';
 
 const TossCardComponent = ({setTossCardState, setLoadingState,setTossWin,setTossResultCardState}) => {
-    const {account, Contract} = useContext(Web3Context);
+    const {account, Contract, checkIfWalletIsConnected} = useContext(Web3Context);
+    useEffect(() => {
+      checkIfWalletIsConnected();
+      console.log(Contract)
+    }, []);
     // const[tossWin, setTossWin] = useState(3);
     const onclickHeadsHandler = async () => {
       console.log(Contract)

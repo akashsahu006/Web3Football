@@ -4,11 +4,38 @@ import { updatePlayerState, penaltyShoot } from '../../contexts/UseContract/writ
 import Web3Context from '../../contexts';
 import {Link} from "react-router-dom"
 import glowFootball from "../../assets/images/glowFootball.png"
+import redBall from "../../assets/images/redBall.png"
+import greenBall from "../../assets/images/greenBall.png"
+import ReactPlayer from 'react-player';
+import goalSavedVideo from "../../assets/videos/save.mp4"
+import goalScoredVideo from "../../assets/videos/goal.mp4"
+
+
+
+
+
+
+import p0 from "../../assets/images/players/0.png"
+import p4 from "../../assets/images/players/4.png"
+import p6 from "../../assets/images/players/6.png"
+import p8 from "../../assets/images/players/8.png"
+import p10 from "../../assets/images/players/10.png"
+
+import p1 from "../../assets/images/players/1.png"
+import p3 from "../../assets/images/players/3.png"
+import p5 from "../../assets/images/players/5.png"
+import p7 from "../../assets/images/players/7.png"
+import p9 from "../../assets/images/players/9.png"
+
+
+
+
 
 const GameComponent = ({currentPlayerState, setCurrentPlayerState}) => {
     const {account, Contract, checkIfWalletIsConnected } = useContext(Web3Context);
     useEffect(() => {
         checkIfWalletIsConnected();
+        console.log(Contract)
       }, []);
       const initialValue = 0;
     const [gameOpeningState,setGameOpeningState] = useState(true);
@@ -20,6 +47,56 @@ const GameComponent = ({currentPlayerState, setCurrentPlayerState}) => {
     const [resultState, setResultState] = useState(false);
     const[isLoading,setIsLoading] = useState(false);
 
+    const [round, setRound] = useState(0);
+    const [playerScoreRecord, setPlayerScoreRecord] = useState([])
+    const [oldPS, setOldPS] = useState(0);
+
+    const [computerScoreRecord, setComputerScoreRecord] = useState([])
+    const [oldCS, setOldCS] = useState(0);
+
+
+      useEffect(() => {
+        console.log(playerScoreRecord,computerScoreRecord)
+      },[round])
+
+      const ScoreComponent = () => {
+        return (
+            <div className='w-[450px] h-[30px] bg-gradientLeft/80 mt-4 flex border-4 border-gradientLeft '>
+                <div className='w-1/2 flex items-center'>
+                    <h1 className='bg-clip-text text-transparent bg-gradient-to-l from-bl to-br'>Player:</h1>
+                    {playerScoreRecord.map((data) => {
+                        if(data===0){
+                            return (
+                                <img className='w-[18px] ml-2' src={redBall} alt="" />
+                            )
+                        }
+                        else{
+                            return (
+                                <img className='w-[18px] ml-2' src={greenBall} alt="" />
+                            )
+                        }
+                        
+                    })}
+                </div>
+                <div className='w-1/2 flex items-center'>
+                    <h1 className='bg-clip-text text-transparent bg-gradient-to-l from-bl to-br'>Web3:</h1>
+                    {computerScoreRecord.map((data) => {
+                        if(data===0){
+                            return (
+                                <img className='w-[18px] ml-2' src={redBall} alt="" />
+                            )
+                        }
+                        else{
+                            return (
+                                <img className='w-[18px] ml-2' src={greenBall} alt="" />
+                            )
+                        }
+                    })}
+
+                </div>
+            </div>
+        )
+      }
 
       const Loading = () =>{
         return(
@@ -109,25 +186,52 @@ const GameComponent = ({currentPlayerState, setCurrentPlayerState}) => {
     const onClickShoot = async (option) => {
         setInterfaceState(false);
         setIsLoading(true);
+        // const ps = playerScore;
+        // const cs = computerScore;
+        // console.log("Before",ps,cs);
         await penaltyShoot(Contract,account,interFace.value,option)
-        await getPlayerScore(Contract).then((data)=>setPlayerScore(data));
-        await getComputerScore(Contract).then((data)=>setComputerScore(data));
-        await getRoundNumber(Contract).then(async (data)=> {
-            const res = await checkResult(Contract);
-            console.log(`Round is ${data}`)
-            console.log(playerScore,computerScore)
+        await getPlayerScore(Contract).then((data)=>{
+            // console.log("AfterinsidePs:",data);
+            if(currentPlayerState === 2){
+                if(oldPS === data){
+                    setPlayerScoreRecord(playerScoreRecord => [...playerScoreRecord, 0]);
+                    setIsLoading(false);
+                    setGoalSavedState(true);
+                }
+                else{
+                    setPlayerScoreRecord(playerScoreRecord => [...playerScoreRecord, 1]);
+                    setOldPS(data);
+                    setIsLoading(false);
+                    setGoalScoredState(true);
+                }
+                setCurrentPlayerState(1);
 
-            setResult({value:res});
-            console.log(`Round check result is ${result.value}`)
-            if(res !== '0'){
-                setIsLoading(false);
-                setResultState(true);
             }
-            else{
-                setIsLoading(false);
-                setInterfaceState(true);
+            setPlayerScore(data)
+        });
+        await getComputerScore(Contract).then((data)=>{
+            // console.log("AfterinsideCd:",cs);
+            if(currentPlayerState === 1){
+                if(oldCS === data){
+                    setComputerScoreRecord(computerScoreRecord => [...computerScoreRecord, 0])
+                    setIsLoading(false);
+                    setGoalSavedState(true);
+                }
+                else{
+                    setComputerScoreRecord(computerScoreRecord => [...computerScoreRecord, 1])
+                    setOldCS(data);
+                    setIsLoading(false);
+                    setGoalScoredState(true);
+                }
+                setCurrentPlayerState(2);
+
             }
-        })
+
+            setComputerScore(data)}
+            );
+        console.log("Update",playerScore,computerScore);
+        
+        setRound(round +1);
 
         const t =await getInterface(Contract)
         setInterFace({value:t})
@@ -167,18 +271,94 @@ const GameComponent = ({currentPlayerState, setCurrentPlayerState}) => {
         // console.log(currentPlayerState)
     }
 
+    const[ goalScoredState, setGoalScoredState] = useState(false);
+    const onGoalEnded = async () => {
+        await getRoundNumber(Contract).then(async (data)=> {
+            const res = await checkResult(Contract);
+            console.log(`Round is ${data}`)
+            console.log(playerScore,computerScore)
+
+            setResult({value:res});
+            // console.log(`Round check result is ${result.value}`)
+            setGoalScoredState(false);
+            if(res !== '0'){
+                setIsLoading(false);
+                setResultState(true);
+            }
+            else{
+                setIsLoading(false);
+                setInterfaceState(true);
+            }
+
+        })
+    }
+    const GoalScored = () => {
+        return  <ReactPlayer url={goalScoredVideo} height="100%" width="100%" playing muted onEnded={onGoalEnded}/>
+    }
+
+
+    const[ goalSavedState, setGoalSavedState] = useState(false);
+    const onSaveEnded = async () => {
+        await getRoundNumber(Contract).then(async (data)=> {
+            const res = await checkResult(Contract);
+            console.log(`Round is ${data}`)
+            console.log(playerScore,computerScore)
+
+            setResult({value:res});
+            // console.log(`Round check result is ${result.value}`)
+            setGoalSavedState(false);
+            if(res !== '0'){
+                setIsLoading(false);
+                setResultState(true);
+            }
+            else{
+                setIsLoading(false);
+                setInterfaceState(true);
+            }
+
+        })
+    }
+    const GoalSaved = () => {
+        return <ReactPlayer url={goalSavedVideo} height="100%" width="100%" playing muted onEnded={onSaveEnded}/>
+    }
 
   return (
-    <div className=''>
-        <div className='w-[500px] border-8 border-gradientLeft rounded-lg'>
-            {gameOpeningState && <GameOpeningComponent/> }
-            {interfaceState && <InterfaceComponent/>}
-            {isLoading && <Loading/>}
-            {resultState && <ResultComponent/>}
-            
+    <div className='flex'>
+        <div className='flex flex-col items-center mr-8 bg-black/50 p-4'>
+            <h1 className='bg-clip-text text-transparent bg-gradient-to-l from-bl to-br font-bold mb-4'>Your Cards</h1>
+            <div className='grid grid-cols-1 gap-1'>
+                <img src={p0} className='w-[40px] ' alt="" />
+                <img src={p8} className='w-[40px]' alt="" />
+                <img src={p10} className='w-[40px]' alt="" />
+                <img src={p4} className='w-[40px]' alt="" />
+                <img src={p6} className='w-[40px]' alt="" />
+            </div>
         </div>
-        <div>{playerScore}
-            {computerScore}</div>
+        <div>
+            <div className='w-[500px] border-8 border-gradientLeft rounded-lg'>
+                {gameOpeningState && <GameOpeningComponent/> }
+                {interfaceState && <InterfaceComponent/>}
+                {isLoading && <Loading/>}
+                {resultState && <ResultComponent/>}
+                {goalSavedState && <GoalSaved/>}
+                {goalScoredState && <GoalScored/>}
+                
+            </div>
+            <div className='flex justify-center '>
+                <ScoreComponent/>
+            </div>
+        </div>
+        <div className='flex flex-col items-center ml-8 bg-black/50 p-4'>
+            <h1 className='bg-clip-text text-transparent bg-gradient-to-l from-bl to-br font-bold mb-4'>Web3 Cards</h1>
+            <div className='grid grid-cols-1 gap-1'>
+                <img src={p3} className='w-[40px]' alt="" />
+                <img src={p1} className='w-[40px] ' alt="" />
+                <img src={p5} className='w-[40px]' alt="" />
+                <img src={p7} className='w-[40px]' alt="" />
+                <img src={p9} className='w-[40px]' alt="" />
+            </div>
+        </div>
+        
     </div>
     
   )

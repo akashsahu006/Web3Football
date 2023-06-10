@@ -22,8 +22,7 @@ contract Web3Football is VRFConsumerBaseV2, ConfirmedOwner {
     uint8 public round_counter;
     round_winner status = round_winner.MATCH_GOING_ON;
     uint256[] public randomNumbers;
-    uint8[] team1Ratings = [3, 1, 1, 2, 3, 2];
-    uint8[] team2Ratings = [2, 3, 3, 1, 1, 2];
+
     uint8 public team1Score = 0;
     uint8 public team2Score = 0;
     uint8 public roundNumber = 0;
@@ -94,6 +93,9 @@ contract Web3Football is VRFConsumerBaseV2, ConfirmedOwner {
         team2
     }
 
+    //For trial purposes
+    uint8[] team1Ratings = [3, 1, 1, 2, 2, 2];
+    uint8[] team2Ratings = [2, 3, 2, 1, 1, 2];
     //structure that has shoot details
     struct shoot_detail {
         uint8 shoot_no;
@@ -360,7 +362,7 @@ contract Web3Football is VRFConsumerBaseV2, ConfirmedOwner {
                 return 0; //match is still going on
             }
         } else {
-            if ((roundNumber + 1) % 2 == 0) {
+            if (roundNumber % 2 == 0) {
                 if (curr_team1 > curr_team2) {
                     // Round_Detail[round_counter].round_complete = true;
                     // Round_Detail[round_counter].Round_Winner = round_winner
