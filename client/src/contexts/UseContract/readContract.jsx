@@ -78,4 +78,54 @@ const getLastId = async (contract) =>{
     return t
 }
 
-export {penaltyShoot, getLastId, getStatus,  getWinOrLose, getInterface, getPlayerState, getComputerScore, getPlayerScore, checkResult, getRoundNumber}
+const joinStatus = async (contract,account) => {
+  if(!contract){
+    return false;
+  }
+  const t = await contract.methods.joinStatus(account.currentAccount).call();
+  return t;
+}
+
+const getPlayerActiveCards = async(contract,account) => {
+  if(!contract){
+    return false;
+  }
+  const t = await contract.methods.getPlayingCards(account.currentAccount).call();
+  return t;
+}
+
+
+const getPlayerActiveGKCard= async(contract,account) => {
+  if(!contract){
+    return false;
+  }
+  const t = await contract.methods.playerActiveGKCard(account.currentAccount).call();
+  return t;
+}
+
+const getInactiveCards = async(contract,account) => {
+  if(!contract){
+    return false;
+  }
+  const t = await contract.methods.getInactiveCards(account.currentAccount).call();
+  return t;
+}
+
+const getAvailableCards = async(contract) => {
+  if(!contract){
+    return false;
+  }
+  const t = await contract.methods.getAvailableCards().call();
+  return t;
+}
+
+
+const getPlayerPoints = async(contract, account) => {
+  if(!contract){
+    return false;
+  }
+  const t = await contract.methods.playerPoints(account.currentAccount).call();
+  return t;
+}
+
+export {getInactiveCards, getPlayerPoints, getAvailableCards, getPlayerActiveGKCard, getPlayerActiveCards, joinStatus, penaltyShoot, getLastId, getStatus,  getWinOrLose, getInterface, getPlayerState, getComputerScore, getPlayerScore, checkResult, getRoundNumber}

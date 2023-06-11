@@ -5,6 +5,7 @@ pragma solidity ^0.8.7;
 import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
 import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
 import "@chainlink/contracts/src/v0.8/ConfirmedOwner.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 
 /**
  * Request testnet LINK and ETH here: https://faucets.chain.link/
@@ -17,7 +18,7 @@ import "@chainlink/contracts/src/v0.8/ConfirmedOwner.sol";
  * DO NOT USE THIS CODE IN PRODUCTION.
  */
 
-contract Web3Football is VRFConsumerBaseV2, ConfirmedOwner {
+contract Web3Football is VRFConsumerBaseV2, ConfirmedOwner, ERC721URIStorage {
     uint8 public shoot_counter = 0;
     uint8 public round_counter;
     round_winner status = round_winner.MATCH_GOING_ON;
@@ -26,12 +27,6 @@ contract Web3Football is VRFConsumerBaseV2, ConfirmedOwner {
     uint8 public team1Score = 0;
     uint8 public team2Score = 0;
     uint8 public roundNumber = 0;
-
-    mapping(address => uint256) public playerBalance;
-
-    function getPlayerBalance() public view returns (uint256) {
-        return playerBalance[msg.sender];
-    }
 
     function initialize_array() public {
         randomNumbers[0] = 52592424;
@@ -318,11 +313,47 @@ contract Web3Football is VRFConsumerBaseV2, ConfirmedOwner {
     )
         VRFConsumerBaseV2(0x8103B0A8A00be2DDC778e6e7eaa21791Cd364625)
         ConfirmedOwner(msg.sender)
+        ERC721("Web3Football", "FC")
     {
         COORDINATOR = VRFCoordinatorV2Interface(
             0x8103B0A8A00be2DDC778e6e7eaa21791Cd364625
         );
         s_subscriptionId = subscriptionId;
+
+        //nfts
+        Card memory p0 = Card(0, 3);
+        Card memory p1 = Card(1, 3);
+        Card memory p2 = Card(2, 3);
+        Card memory p3 = Card(3, 2);
+        Card memory p4 = Card(4, 2);
+        Card memory p5 = Card(5, 2);
+        Card memory p6 = Card(6, 2);
+        Card memory p7 = Card(7, 2);
+        Card memory p8 = Card(8, 1);
+        Card memory p9 = Card(9, 1);
+        Card memory p10 = Card(10, 1);
+
+        availableCards.push(p0);
+        availableCards.push(p1);
+        availableCards.push(p2);
+        availableCards.push(p3);
+        availableCards.push(p4);
+        availableCards.push(p5);
+        availableCards.push(p6);
+        availableCards.push(p7);
+        availableCards.push(p8);
+        availableCards.push(p9);
+        availableCards.push(p10);
+
+        Card memory g0 = Card(0, 3);
+        Card memory g1 = Card(1, 2);
+        Card memory g2 = Card(2, 2);
+        Card memory g3 = Card(3, 1);
+
+        availableGKCards.push(g0);
+        availableGKCards.push(g1);
+        availableGKCards.push(g2);
+        availableGKCards.push(g3);
     }
 
     // Assumes the subscription is funded sufficiently.
@@ -373,5 +404,89 @@ contract Web3Football is VRFConsumerBaseV2, ConfirmedOwner {
         return (request.fulfilled, request.randomWords, request.didWin);
     }
 
-    //mycode
+    //cards and points
+    function getAvailableCards() public view returns (Card[] memory) {
+        return availableCards;
+    }
+
+    function getAvailableGKCards() public view returns (Card[] memory) {
+        return availableGKCards;
+    }
+
+    uint256 COUNTER;
+
+    struct Card {
+        uint256 id;
+        uint8 level;
+    }
+
+    Card[] public cards;
+    Card[] public availableCards;
+    Card[] public availableGKCards;
+    mapping(address => Card[]) public playerActiveCards;
+    mapping(address => Card[]) public playerInactiveCards;
+    mapping(address => Card) public playerActiveGKCard;
+
+    //CreationOfNFT
+    function _createNft(uint8 _id, uint8 option) internal {
+        // _safeMint(_to,COUNTER);
+        // COUNTER++;
+        if (option == 1) {
+            playerActiveGKCard[msg.sender] = availableGKCards[_id];
+        } else if (option == 2) {
+            playerActiveCards[msg.sender].push(availableCards[_id]);
+        }
+        _safeMint(msg.sender, COUNTER);
+        COUNTER++;
+    }
+
+    function _buyNft(uint _id, uint option) internal {
+        playerPoints[msg.sender] -= 200;
+        if (option == 2) {
+            playerInactiveCards[msg.sender].push(availableCards[_id]);
+        }
+        _safeMint(msg.sender, COUNTER);
+        COUNTER++;
+    }
+
+    function buyNftCard(uint8 _id, uint8 option) public {
+        _buyNft(_id, option);
+    }
+
+    function createActiveCard(uint8 _id, uint8 option) public {
+        _createNft(_id, option);
+    }
+
+    //GettingNFT
+    function getPlayingCards(
+        address player
+    ) public view returns (Card[] memory) {
+        return playerActiveCards[player];
+    }
+
+    function getInactiveCards(
+        address player
+    ) public view returns (Card[] memory) {
+        return playerInactiveCards[player];
+    }
+
+    //playerpoints
+    mapping(address => bool) public joinStatus;
+
+    function getJoinStatus() public view returns (bool) {
+        return joinStatus[msg.sender];
+    }
+
+    mapping(address => uint256) public playerPoints;
+
+    function join() public {
+        joinStatus[msg.sender] = true;
+        playerPoints[msg.sender] = 400;
+        _createNft(0, 2);
+        _createNft(8, 2);
+        _createNft(10, 2);
+        _createNft(4, 2);
+        _createNft(6, 2);
+        _createNft(1, 1);
+    }
 }

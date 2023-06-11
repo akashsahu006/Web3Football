@@ -31,4 +31,19 @@ const resetGame = async(contract,account) =>{
     await contract.methods.reset().send({from:account.currentAccount})
 }
 
-export {getRequestRandomWords,callToss,updatePlayerState,resetGame}
+const signup = async(contract,account) => {
+    if(!contract){
+        return false;
+    }
+    await contract.methods.join().send({from:account.currentAccount})
+}
+
+const buyPlayer = async(contract,account,id,option) => {
+    if(!contract){
+        return false;
+    }
+    const t = await contract.methods.buyNftCard(id,option).send({from:account.currentAccount});
+    return t;
+}
+
+export {buyPlayer, signup, getRequestRandomWords,callToss,updatePlayerState,resetGame}

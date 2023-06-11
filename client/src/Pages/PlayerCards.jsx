@@ -1,4 +1,6 @@
-import React from 'react'
+import React, {useEffect, useContext, useState} from 'react'
+import { getInactiveCards, getPlayerActiveCards, getPlayerActiveGKCard } from '../contexts/UseContract/readContract'
+import Web3Context from '../contexts'
 import playgroundImg from "../assets/images/pg.png"
 import p0 from "../assets/images/players/0.png"
 import p3 from "../assets/images/players/3.png"
@@ -10,26 +12,55 @@ import {Link} from "react-router-dom"
 
 
 const PlayerCards = () => {
+  const[cardsData, setCardsData] = useState([]);
+  const[inactiveCardsData, setInactiveCardsData] = useState([]);
+
+  const[cardsStatus, setCardsStatus] = useState(false);
+  const[inactiveCardsStatus, setInactiveCardsStatus] = useState(false);
+
+  const[gkData, setGkData] =useState([]);
+
+  useEffect(() => {
+    checkIfWalletIsConnected();
+    getPlayerActiveCards(Contract,account).then((data) => {
+      setCardsData(cardsData => [...cardsData,data]);
+      setCardsStatus(true);
+    });
+    getPlayerActiveGKCard(Contract,account).then((data) => {
+      setGkData(gkData=> [...gkData,data]);
+    });
+    getInactiveCards(Contract,account).then((data) => {
+      setInactiveCardsData(inactiveCardsData=> [...inactiveCardsData,data]);
+      setInactiveCardsStatus(true);
+    })
+  }, []);
+const {checkIfWalletIsConnected, Contract, account} = useContext(Web3Context);
+
   return (
     <div className=' w-screen h-screen p-0'>
         <div className=" bg-playground bg-cover w-screen h-screen flex flex-col justify-center items-center" >
-                <h1 className='bg-clip-text text-transparent bg-gradient-to-l from-bl to-br font-bold text-2xl'>Your Cards</h1>
-
-           <div className='grid grid-cols-3 gap-4 mt-5'>
-                <img src={p0} className="cursor-pointer w-[80px]" alt="" />
-                <img src={p3} className="cursor-pointer w-[80px]" alt="" />
-                <img src={p5} className="cursor-pointer w-[80px]" alt="" />
-                <img src={p8} className="cursor-pointer w-[80px]" alt="" />
-                <img src={p9} className="cursor-pointer w-[80px]" alt="" />
-                <img src={g1} className="cursor-pointer w-[80px]" alt="" />
-
-
-
-
-                {/* <img src={p4} alt="" /> */}
-                {/* <img src={p5} alt="" /> */}
-
-           </div>
+                <h1 className='bg-clip-text text-transparent bg-gradient-to-l from-bl to-br font-bold text-3xl'>Your Cards</h1>
+                <h1 className='bg-clip-text text-transparent bg-gradient-to-l from-bl to-br font-bold text-lg'>Active Cards</h1>
+                <div className='grid grid-cols-6 gap-4 mt-5'>
+                  {cardsStatus && cardsData[0].map((data)=> 
+                  
+                  <div>
+                      <img className="cursor-pointer w-[60px]" src={`/images/players/${data.id}.png`} alt="asd" />
+                  </div>)}
+                  {cardsStatus && <img className="cursor-pointer w-[60px]" src={`/images/keepers/${gkData[0][0]}.png`} alt="asd" />}
+                  
+                </div>
+                <h1 className='bg-clip-text text-transparent bg-gradient-to-l from-bl to-br font-bold text-lg'>Inactive Cards</h1>
+                <div className='grid grid-cols-6 gap-4 mt-5'>
+                    {inactiveCardsStatus && inactiveCardsData[0].map((data)=> {
+                      return (
+                        <img className="cursor-pointer w-[60px]" src={`/images/players/${data.id}.png`} alt="asd" />
+                      )
+                    })}
+                </div>
+                {/* <button onClick={async() => {
+                await getInactiveCards(Contract, account).then((data) => {console.log("Inactive Cards:",data)});
+              }}>Inactive cards</button> */}
            <Link to={"/"}><button><h1 className='m-4 text-black  flex justify-center items-center h-[20px] w-[80px] bg-gradient-to-l from-bl to-br rounded-2xl'>Back</h1></button></Link>
         </div>
     </div>

@@ -15,7 +15,7 @@ module.exports = {
       networkCheckTimeout: 10000,
       provider: () => new HDWalletProvider(`${key}`,`https://sepolia.infura.io/v3/d510e7fdccde483397b77913633485cb`),
       network_id: 11155111,       // Ropsten's id
-      gas: 5500000,        // Ropsten has a lower block limit than mainnet
+      gas: 10000000,        // Ropsten has a lower block limit than mainnet
       confirmations: 2,    // # of confs to wait between deployments. (default: 0)
       timeoutBlocks: 200,  // # of blocks before a deployment times out  (minimum/default: 50)
       skipDryRun: true     // Skip dry run before migrations? (default: false for public nets )
