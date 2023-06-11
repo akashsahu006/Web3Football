@@ -9,9 +9,10 @@ const Toss = ({setGameState,setTossState,setCurrentPlayerState}) => {
     const [loadingState, setLoadingState] = useState(false);
     const [tossResultCardState, setTossResultCardState] = useState(false);
     const[tossWin, setTossWin] = useState(false);
-
+    
   return (
     <div className='w-full h-full bg-black/50'>
+        {}
         {tossCardState && <TossCardComponent setTossCardState={setTossCardState} setLoadingState={setLoadingState} setTossWin={setTossWin} setTossResultCardState={setTossResultCardState}/>}
         {loadingState && <Loader/>}
         {tossResultCardState && <TossResultCard tossWin={tossWin} setGameState={setGameState} setTossState={setTossState} setCurrentPlayerState={setCurrentPlayerState}/>}

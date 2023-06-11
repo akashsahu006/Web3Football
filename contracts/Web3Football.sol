@@ -94,8 +94,19 @@ contract Web3Football is VRFConsumerBaseV2, ConfirmedOwner, ERC721URIStorage {
         team2
     }
 
-    //For trial purposes
-    uint8[] team1Ratings = [3, 1, 1, 2, 2, 2];
+    //For initiliazation
+    uint8[6] public team1Ratings;
+
+    function gameInitialization() public {
+        team1Ratings[0] = playerActiveCards[msg.sender][0].level;
+        team1Ratings[1] = playerActiveCards[msg.sender][1].level;
+        team1Ratings[2] = playerActiveCards[msg.sender][2].level;
+        team1Ratings[3] = playerActiveCards[msg.sender][3].level;
+        team1Ratings[4] = playerActiveCards[msg.sender][4].level;
+
+        team1Ratings[5] = playerActiveGKCard[msg.sender].level;
+    }
+
     uint8[] team2Ratings = [2, 3, 2, 1, 1, 2];
     //structure that has shoot details
     struct shoot_detail {
@@ -127,18 +138,19 @@ contract Web3Football is VRFConsumerBaseV2, ConfirmedOwner, ERC721URIStorage {
 
     function interface_Selection(
         uint8 _shootNumber,
-        uint8 _playerState
+        uint8 _playerState,
+        address _from
     ) external view returns (uint8) {
         uint8 goalkeeper;
         uint8 striker;
         uint8 index = (_shootNumber % 10) / 2;
 
         if (_playerState == 2) {
-            striker = team1Ratings[index];
+            striker = playerActiveCards[_from][index].level;
             goalkeeper = team2Ratings[5];
         } else {
             striker = team2Ratings[index];
-            goalkeeper = team1Ratings[5];
+            goalkeeper = playerActiveGKCard[_from].level;
         }
 
         if (striker > goalkeeper) {
@@ -488,5 +500,9 @@ contract Web3Football is VRFConsumerBaseV2, ConfirmedOwner, ERC721URIStorage {
         _createNft(4, 2);
         _createNft(6, 2);
         _createNft(1, 1);
+    }
+
+    function wonPoints(address winner) public {
+        playerPoints[winner] += 20;
     }
 }

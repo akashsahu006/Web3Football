@@ -21,7 +21,10 @@ module.exports = {
         'interface' : "url(../src/assets/images/interface.jpg)",
         'landingBg' : "url(../src/assets/images/landingBg2.png)",
         'playground': "url(../src/assets/images/pg.png)",
-      }
+      },
+      fontFamily: {
+        prism: ['Tilt Prism'],
+      },
     },
   },
   plugins: [],

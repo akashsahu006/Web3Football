@@ -78,7 +78,7 @@ const [isJoin, setIsJoinStatus] = useState(false);
               <img  src={glowFootball} className='animate-spin-slow w-[40px] h-[40px] mr-6' alt="" />
               {isJoin && connected && <Link to={"/Yourcards"}><h1 className='underline decoration-bl decoration-solid decoration-1 underline-offset-4 hover:decoration-ebl bg-clip-text text-transparent bg-gradient-to-l from-bl to-br font-bold'>Your cards</h1></Link>}
               {isJoin && connected && <Link to={"/Marketplace"}><h1 className='ml-4 underline decoration-bl decoration-solid decoration-1 underline-offset-4 hover:decoration-ebl bg-clip-text text-transparent bg-gradient-to-l from-bl to-br font-bold'>Marketplace</h1></Link>}
-              {isJoin && connected && <Link to={"/Marketplace"}><h1 className='ml-4 underline decoration-bl decoration-solid decoration-1 underline-offset-4 hover:decoration-ebl bg-clip-text text-transparent bg-gradient-to-l from-bl to-br font-medium'>{balance} Points</h1></Link>}
+              {isJoin && connected && <Link to={"/"}><h1 className='ml-4 underline decoration-bl decoration-solid decoration-1 underline-offset-4 hover:decoration-ebl bg-clip-text text-transparent bg-gradient-to-l from-bl to-br font-medium'>{balance} Points</h1></Link>}
 
             </div>
             
@@ -90,17 +90,17 @@ const [isJoin, setIsJoinStatus] = useState(false);
               <button onClick={onClickRandomNumberHandler}>Random number getter</button>
               <button onClick={onResetHandler}>Reset</button> */}
               {/* <Link to={"/Testing"}><button className='text-blue-500 ' >Play</button></Link> */}
-              <button onClick={async() => {
+              {/* <button onClick={async() => {
                 await getPlayerActiveCards(Contract, account).then((data) => {console.log("Active Cards:",data)});
               }}>Player cards</button>
               <button onClick={async() => {
                 await getInactiveCards(Contract, account).then((data) => {console.log("Active Cards:",data)});
-              }}>Inactive cards</button>
-              <button onClick={async () => {
+              }}>Inactive cards</button> */}
+              {/* <button onClick={async () => {
                   await joinStatus(Contract,account).then((data) => console.log(data));
-              }}>Join status</button>
+              }}>Join status</button> */}
               <h1 className='text-[2.5rem] bg-clip-text text-transparent bg-gradient-to-l from-bl to-br font-bold' >Welcome to </h1>
-              <h1 className='text-[3rem] bg-clip-text text-transparent bg-gradient-to-l from-bl to-br font-bold '>Web3Football</h1>
+              <h1 className='font-prism text-[3rem] bg-clip-text text-transparent bg-gradient-to-l from-bl to-br font-bold '>Web3Football</h1>
               <h1 className='text-[0.8rem] ml-1 mt-2'>Unlock your favourite player cards. Build your own team. Play penalty shootout. Win game points. Redeem points to upgrade your team</h1>
             </div>
             <div className='flex justify-center mt-4'>

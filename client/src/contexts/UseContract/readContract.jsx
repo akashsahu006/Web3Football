@@ -22,11 +22,11 @@ const getLastId = async (contract) =>{
       return t;
   }
 
-  const getInterface = async (contract, shootNumber,playerState) => {
+  const getInterface = async (contract, account, shootNumber,playerState) => {
     if(!contract){
       return false;
     }
-    const t = await contract.methods.interface_Selection(shootNumber, playerState).call();
+    const t = await contract.methods.interface_Selection(shootNumber, playerState,account.currentAccount).call();
     return t;
   }
 

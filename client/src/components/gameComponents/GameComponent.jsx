@@ -1,5 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react'
-import { getInterface, getPlayerState, checkResult, getRoundNumber, penaltyShoot } from '../../contexts/UseContract/readContract';
+import { getPlayerActiveCards, getInterface, getPlayerState, checkResult, getRoundNumber, penaltyShoot } from '../../contexts/UseContract/readContract';
+import { wonPoints } from '../../contexts/UseContract/writeContract';
 import Web3Context from '../../contexts';
 import {Link} from "react-router-dom"
 import glowFootball from "../../assets/images/glowFootball.png"
@@ -35,6 +36,10 @@ const GameComponent = ({currentPlayerState, setCurrentPlayerState}) => {
     useEffect(() => {
         checkIfWalletIsConnected();
         console.log(Contract)
+        getPlayerActiveCards(Contract,account).then((data) => {
+            setCardsData(cardsData => [...cardsData,data]);
+            setCardsStatus(true);
+          });
       }, []);
       const initialValue = 0;
     const [gameOpeningState,setGameOpeningState] = useState(true);
@@ -51,6 +56,9 @@ const GameComponent = ({currentPlayerState, setCurrentPlayerState}) => {
 
     const [computerScoreRecord, setComputerScoreRecord] = useState([])
 
+    const[cardsData, setCardsData] = useState([]);
+    const[gkData, setGkData] =useState([]);
+    const[cardsStatus, setCardsStatus] = useState(false);
 
     ////shootout logic
      
@@ -59,44 +67,46 @@ const GameComponent = ({currentPlayerState, setCurrentPlayerState}) => {
       const onClickShoot = async (option) => {
         setInterfaceState(false);
         setIsLoading(true);
-        await penaltyShoot(Contract, interFace.value, option, shootNumber).then(async (data) => {
-            setIsLoading(false);
-            
-
-            if(currentPlayerState ===1 && !(data)){
-                setComputerScore(computerScore+1);
-                setComputerScoreRecord(computerScoreRecord=> [...computerScoreRecord,1]);
-                setGoalScoredState(true);
+        setTimeout(async () => {
+            await penaltyShoot(Contract, interFace.value, option, shootNumber).then(async (data) => {
+                setIsLoading(false);
                 
-            }
-            else if(currentPlayerState === 1 && data){
-                setComputerScoreRecord(computerScoreRecord=> [...computerScoreRecord,0]);
-                setGoalSavedState(true);
-            }
-            else if(currentPlayerState ===2 && data){
-                setPlayerScore(playerScore+1);
-                setPlayerScoreRecord(playerScoreRecord => [...playerScoreRecord, 1]);
-                setGoalScoredState(true);
-            }
-            else if(currentPlayerState === 2 && !(data)){
-                setPlayerScoreRecord(playerScoreRecord => [...playerScoreRecord, 0]);
-                setGoalSavedState(true);
-            }
-            console.log("shoot number",shootNumber, interFace.value)
-            
-            if(currentPlayerState === 1){
-                setCurrentPlayerState(2);
-            }
-            else{
-                setCurrentPlayerState(1);
-            }
-            const tempShootNumber = shootNumber + 1;
-            
-            const t = await getInterface(Contract, tempShootNumber, currentPlayerState);
-            console.log(interFace.value);
-            setInterFace({value:t});
-            setShootNumber(shootNumber+1);
-        })
+    
+                if(currentPlayerState ===1 && !(data)){
+                    setComputerScore(computerScore+1);
+                    setComputerScoreRecord(computerScoreRecord=> [...computerScoreRecord,1]);
+                    setGoalScoredState(true);
+                    
+                }
+                else if(currentPlayerState === 1 && data){
+                    setComputerScoreRecord(computerScoreRecord=> [...computerScoreRecord,0]);
+                    setGoalSavedState(true);
+                }
+                else if(currentPlayerState ===2 && data){
+                    setPlayerScore(playerScore+1);
+                    setPlayerScoreRecord(playerScoreRecord => [...playerScoreRecord, 1]);
+                    setGoalScoredState(true);
+                }
+                else if(currentPlayerState === 2 && !(data)){
+                    setPlayerScoreRecord(playerScoreRecord => [...playerScoreRecord, 0]);
+                    setGoalSavedState(true);
+                }
+                console.log("shoot number",shootNumber, interFace.value)
+                
+                if(currentPlayerState === 1){
+                    setCurrentPlayerState(2);
+                }
+                else{
+                    setCurrentPlayerState(1);
+                }
+                const tempShootNumber = shootNumber + 1;
+                
+                const t = await getInterface(Contract,account, tempShootNumber, currentPlayerState);
+                console.log(interFace.value);
+                setInterFace({value:t});
+                setShootNumber(shootNumber+1);
+            })
+        }, 2000);
 
       }
 
@@ -152,12 +162,29 @@ const GameComponent = ({currentPlayerState, setCurrentPlayerState}) => {
       const onHomeButton = async () => {
 
       }
+
+      const [isDepositing, setIsDepositing] = useState(false);
+      const Deposited = () => {
+        return (
+            <div className='flex flex-col justify-center items-center h-[288px] bg-black/70'>
+                <Link to={"/"}><button className='m-4 text-black font-medium flex justify-center items-center h-[30px] w-[210px] bg-gradient-to-l from-bl to-br rounded-2xl'><h1>Return home</h1></button></Link>
+            </div>
+        )
+      }
+
       const ResultComponent = () => {
         if(result.value === '1'){
             return (
                 <div className='flex flex-col justify-center items-center h-[288px] bg-black/70'>
                     <div className='mb-[40px] text-3xl bg-clip-text text-transparent bg-gradient-to-l from-bl to-br font-bold'>You won!</div>
-                    <Link to={"/"} className='m-4 text-black font-medium flex justify-center items-center h-[30px] w-[210px] bg-gradient-to-l from-bl to-br rounded-2xl'><h1>Collect points and return</h1></Link>
+                     <button className='m-4 text-black font-medium flex justify-center items-center h-[30px] w-[210px] bg-gradient-to-l from-bl to-br rounded-2xl' onClick={() => {
+                        setResultState(false);
+                        setIsLoading(true);
+                        wonPoints(Contract,account).then(() => {
+                            setIsLoading(false);
+                            setIsDepositing(true);
+                        })
+                        }}><h1>Collect points</h1></button>
                 </div>
             )
         }
@@ -300,7 +327,7 @@ const GameComponent = ({currentPlayerState, setCurrentPlayerState}) => {
         setGameOpeningState(false);
         setIsLoading(true);
         // await updatePlayerState(Contract,account,currentPlayerState);
-        const t = await getInterface(Contract, shootNumber,currentPlayerState);
+        const t = await getInterface(Contract,account, shootNumber,currentPlayerState );
         console.log(t);
         await setInterFace({value:t});
         
@@ -387,6 +414,7 @@ const GameComponent = ({currentPlayerState, setCurrentPlayerState}) => {
                 {resultState && <ResultComponent/>}
                 {goalSavedState && <GoalSaved/>}
                 {goalScoredState && <GoalScored/>}
+                {isDepositing && <Deposited/>}
                 
             </div>
             <div className='flex justify-center '>

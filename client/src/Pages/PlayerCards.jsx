@@ -12,12 +12,12 @@ import {Link} from "react-router-dom"
 
 
 const PlayerCards = () => {
-  const[cardsData, setCardsData] = useState([]);
+  
   const[inactiveCardsData, setInactiveCardsData] = useState([]);
 
   const[cardsStatus, setCardsStatus] = useState(false);
   const[inactiveCardsStatus, setInactiveCardsStatus] = useState(false);
-
+  const[cardsData, setCardsData] = useState([]);
   const[gkData, setGkData] =useState([]);
 
   useEffect(() => {

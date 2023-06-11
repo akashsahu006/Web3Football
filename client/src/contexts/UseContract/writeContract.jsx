@@ -46,4 +46,12 @@ const buyPlayer = async(contract,account,id,option) => {
     return t;
 }
 
-export {buyPlayer, signup, getRequestRandomWords,callToss,updatePlayerState,resetGame}
+const wonPoints = async (contract, account) => {
+    if(!contract){
+        return false;
+    }
+    const t = await contract.methods.wonPoints(account.currentAccount).send({from:account.currentAccount});
+    return t;
+}
+
+export {wonPoints, buyPlayer, signup, getRequestRandomWords,callToss,updatePlayerState,resetGame}
