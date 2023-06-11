@@ -493,7 +493,7 @@ contract Web3Football is VRFConsumerBaseV2, ConfirmedOwner, ERC721URIStorage {
 
     function join() public {
         joinStatus[msg.sender] = true;
-        playerPoints[msg.sender] = 400;
+        playerPoints[msg.sender] = 200;
         _createNft(0, 2);
         _createNft(8, 2);
         _createNft(10, 2);

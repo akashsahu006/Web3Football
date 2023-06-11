@@ -13,6 +13,12 @@ const [balance, setBalance] = useState(0);
 const [isJoin, setIsJoinStatus] = useState(false);
   useEffect(() => {
     joinStatus(Contract,account).then((data) => setIsJoinStatus(data));
+    setLoadModalState(true);
+    setTimeout(() => {
+      setLoadModalState(false);
+      joinStatus(Contract,account).then((data) => setIsJoinStatus(data));
+
+    }, 2000);
   },[])
 
   useEffect(() => {
@@ -30,14 +36,22 @@ const [isJoin, setIsJoinStatus] = useState(false);
     getPlayerPoints(Contract,account).then((data) => setBalance(data));
     joinStatus(Contract,account).then((data) => setIsJoinStatus(data));
     
-  },[balance, isJoin]);
+  },[connected, balance, isJoin]);
 
   const func = async () => {
     await checkIfWalletIsConnected().then(async (data) => {
       console.log("data:",data);
       if(data === false){
-        await connectWallet();
-        setConnected(true);
+        await connectWallet().then(async () => {
+          setConnected(true)
+          setLoadModalState(true);
+          await joinStatus(Contract,account).then((data) => setIsJoinStatus(data));
+          setTimeout(() => {
+            setLoadModalState(false);
+            window.location.reload(false);
+          }, 1000);
+        });
+        
         console.log("dadsda");
       }
     });
@@ -109,7 +123,10 @@ const [isJoin, setIsJoinStatus] = useState(false);
             {isJoin && connected && <Link to={"/Game"}><button><h1 className='font-Orbitron tracking-wider m-4 text-black font-medium flex justify-center items-center h-[30px] w-[100px] bg-gradient-to-l from-bl to-br rounded-2xl'>Play</h1></button></Link>}
             {!(isJoin) && connected && <button onClick={async () => {
                   setLoadModalState(true);
-                  await signup(Contract,account).then(() => {setLoadModalState(false)});
+                  await signup(Contract,account).then(() => {
+                    setLoadModalState(false)
+                    window.location.reload(false);
+                  });
               }}><h1 className='font-Orbitron tracking-wider m-4 text-black font-medium flex justify-center items-center h-[30px] w-[100px] bg-gradient-to-l from-bl to-br rounded-2xl'>Join Now</h1></button>}
 
             </div>
