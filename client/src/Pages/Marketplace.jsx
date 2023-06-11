@@ -42,8 +42,8 @@ const [buyStatus, setBuyStatus] = useState(false);
           <div className='fixed'>
             <img className="w-[43px]" src={`/images/success.png`} alt="asd" />
           </div>
-          <h1 className='rounded-2xl w-[130px] flex justify-center bg-gradient-to-l from-bl to-br'>Buy Completed</h1>
-          <button onClick={() => {setBuyStatus(false)}}><h1 className='m-4 border-white border-[1px] text-black  flex justify-center items-center h-[20px] w-[80px] bg-clip-text text-transparent bg-gradient-to-l from-bl to-br rounded-2xl'>Return</h1></button>
+          <h1 className='font-Orbitron tracking-wider rounded-2xl w-[160px] flex justify-center bg-gradient-to-l from-bl to-br'>Buy Completed</h1>
+          <button onClick={() => {setBuyStatus(false)}}><h1 className='font-Orbitron tracking-wider m-4 border-white border-[1px] text-black  flex justify-center items-center h-[20px] w-[80px] bg-clip-text text-transparent bg-gradient-to-l from-bl to-br rounded-2xl'>Return</h1></button>
         </div>
       </div>
     )
@@ -62,8 +62,8 @@ const [buyStatus, setBuyStatus] = useState(false);
                 setModalLoading(false);
                 setBuyStatus(true);
               });
-            }}><h1 className='m-4 text-black/90 text-sm  flex justify-center items-center h-[20px] w-[80px] bg-gradient-to-l from-bl to-br rounded-2xl'>Buy</h1></button>
-            <button onClick={() => setModalStatus(false)}><h1 className='m-4 border-white border-[1px] text-black  flex justify-center items-center h-[20px] w-[80px] bg-clip-text text-transparent bg-gradient-to-l from-bl to-br rounded-2xl'>Return</h1></button>
+            }}><h1 className='font-Orbitron tracking-wider m-4 text-black/90 text-sm  flex justify-center items-center h-[20px] w-[80px] bg-gradient-to-l from-bl to-br rounded-2xl'>Buy</h1></button>
+            <button onClick={() => setModalStatus(false)}><h1 className='font-Orbitron tracking-wider m-4 border-white border-[1px] text-black  flex justify-center items-center h-[20px] w-[80px] bg-clip-text text-transparent bg-gradient-to-l from-bl to-br rounded-2xl'>Return</h1></button>
           </div>
         </div>
       </div>
@@ -75,11 +75,11 @@ const [buyStatus, setBuyStatus] = useState(false);
     <div className=' w-screen h-screen p-0'>
         <div className=" bg-playground bg-cover w-screen h-screen p-4 flex justify-between items-center flex-col" >
             <div className='flex flex-col justify-between h-[80px] items-center'>
-                <h1 className='bg-clip-text text-transparent bg-gradient-to-l from-bl to-br font-bold text-2xl'>Marketplace</h1>
+                <h1 className='font-Orbitron tracking-wider bg-clip-text text-transparent bg-gradient-to-l from-bl to-br font-bold text-2xl'>Marketplace</h1>
                 <div className='flex justify-between items-center text-white w-[600px]'>
-                    <h1 className='text-sm bg-clip-text text-transparent bg-gradient-to-l from-bl to-br'>Bronze Card: 50 points </h1>
-                    <h1 className='text-sm bg-clip-text text-transparent bg-gradient-to-l from-bl to-br'>Silver Card: 100 points </h1>
-                    <h1 className='text-sm bg-clip-text text-transparent bg-gradient-to-l from-bl to-br'>Gold Card: 200 points </h1>
+                    <h1 className='font-Orbitron tracking-wider text-sm bg-clip-text text-transparent bg-gradient-to-l from-bl to-br'>Bronze Card: 50 points </h1>
+                    <h1 className='font-Orbitron tracking-wider text-sm bg-clip-text text-transparent bg-gradient-to-l from-bl to-br'>Silver Card: 100 points </h1>
+                    <h1 className='font-Orbitron tracking-wider text-sm bg-clip-text text-transparent bg-gradient-to-l from-bl to-br'>Gold Card: 200 points </h1>
 
                 </div>
             </div>

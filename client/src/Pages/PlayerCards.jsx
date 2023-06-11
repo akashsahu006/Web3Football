@@ -39,8 +39,8 @@ const {checkIfWalletIsConnected, Contract, account} = useContext(Web3Context);
   return (
     <div className=' w-screen h-screen p-0'>
         <div className=" bg-playground bg-cover w-screen h-screen flex flex-col justify-center items-center" >
-                <h1 className='bg-clip-text text-transparent bg-gradient-to-l from-bl to-br font-bold text-3xl'>Your Cards</h1>
-                <h1 className='bg-clip-text text-transparent bg-gradient-to-l from-bl to-br font-bold text-lg'>Active Cards</h1>
+                <h1 className='font-Orbitron tracking-wider bg-clip-text text-transparent bg-gradient-to-l from-bl to-br font-bold text-3xl'>Your Cards</h1>
+                <h1 className='font-Orbitron tracking-wider bg-clip-text text-transparent bg-gradient-to-l from-bl to-br font-bold text-lg'>Playing VI</h1>
                 <div className='grid grid-cols-6 gap-4 mt-5'>
                   {cardsStatus && cardsData[0].map((data)=> 
                   
@@ -50,7 +50,7 @@ const {checkIfWalletIsConnected, Contract, account} = useContext(Web3Context);
                   {cardsStatus && <img className="cursor-pointer w-[60px]" src={`/images/keepers/${gkData[0][0]}.png`} alt="asd" />}
                   
                 </div>
-                <h1 className='bg-clip-text text-transparent bg-gradient-to-l from-bl to-br font-bold text-lg'>Inactive Cards</h1>
+                <h1 className='font-Orbitron tracking-wider bg-clip-text text-transparent bg-gradient-to-l from-bl to-br font-bold text-lg'>Inactive Cards</h1>
                 <div className='grid grid-cols-6 gap-4 mt-5'>
                     {inactiveCardsStatus && inactiveCardsData[0].map((data)=> {
                       return (

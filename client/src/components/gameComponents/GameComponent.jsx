@@ -118,7 +118,7 @@ const GameComponent = ({currentPlayerState, setCurrentPlayerState}) => {
         return (
             <div className='w-[450px] h-[30px] bg-gradientLeft/80 mt-4 flex border-4 border-gradientLeft '>
                 <div className='w-1/2 flex items-center'>
-                    <h1 className='bg-clip-text text-transparent bg-gradient-to-l from-bl to-br'>Player:</h1>
+                    <h1 className='font-Orbitron tracking-wider bg-clip-text text-transparent bg-gradient-to-l from-bl to-br'>Player:</h1>
                     {playerScoreRecord.map((data) => {
                         if(data===0){
                             return (

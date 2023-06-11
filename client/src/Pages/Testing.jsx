@@ -46,7 +46,7 @@ const Testing = () => {
     console.log(Contract)
   return (
       
-      <div className=" bg-backGround bg-cover w-screen h-screen flex justify-center items-center" >
+      <div className="font-Orbitron tracking-wider bg-backGround bg-cover w-screen h-screen flex justify-center items-center" >
         {start && <StartComponent/>}
         {loading && <Loading/>}
         {introVideoState && (<div className=' w-[500px] border-8 border-gradientLeft rounded-lg'><IntroVideoComponent setIntroVideoState={setIntroVideoState} setTossState={setTossState}/> </div>)}

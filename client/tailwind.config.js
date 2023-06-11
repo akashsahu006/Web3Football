@@ -24,6 +24,7 @@ module.exports = {
       },
       fontFamily: {
         prism: ['Tilt Prism'],
+        Orbitron: ['Orbitron']
       },
     },
   },
