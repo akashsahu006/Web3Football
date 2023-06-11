@@ -67,9 +67,9 @@ const [connected,setConnected] = useState(false);
           </div>
           <div className='w-1/2 text-white'>
             <div className='ml-6 h-[260px] flex flex-col justify-end'>
-              <button onClick={onClickPlayHandler} className='bg-cyan-200'>random numbers</button>
+              {/* <button onClick={onClickPlayHandler} className='bg-cyan-200'>random numbers</button>
               <button onClick={onClickRandomNumberHandler}>Random number getter</button>
-              <button onClick={onResetHandler}>Reset</button>
+              <button onClick={onResetHandler}>Reset</button> */}
               {/* <Link to={"/Testing"}><button className='text-blue-500 ' >Play</button></Link> */}
               <h1 className='text-[2.5rem] bg-clip-text text-transparent bg-gradient-to-l from-bl to-br font-bold' >Welcome to </h1>
               <h1 className='text-[3rem] bg-clip-text text-transparent bg-gradient-to-l from-bl to-br font-bold '>Web3Football</h1>
